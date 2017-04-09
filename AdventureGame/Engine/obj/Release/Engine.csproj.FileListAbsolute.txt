@@ -3,3 +3,8 @@ C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\Engine\bin\Rel
 C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\Engine\obj\Release\Engine.csprojResolveAssemblyReference.cache
 C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\Engine\obj\Release\Engine.dll
 C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\Engine\obj\Release\Engine.pdb
+C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\Engine\bin\Release\Engine.dll
+C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\Engine\bin\Release\Engine.pdb
+C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\Engine\obj\Release\Engine.csprojResolveAssemblyReference.cache
+C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\Engine\obj\Release\Engine.dll
+C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\Engine\obj\Release\Engine.pdb
