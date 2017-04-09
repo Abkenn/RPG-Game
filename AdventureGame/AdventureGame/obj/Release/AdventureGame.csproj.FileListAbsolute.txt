@@ -1,0 +1,14 @@
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\bin\Release\Engine.dll
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\bin\Release\Engine.pdb
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Release\AdventureGame.csprojResolveAssemblyReference.cache
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Release\AdventureGame.AdventureGameForm.resources
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Release\AdventureGame.Properties.Resources.resources
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Release\AdventureGame.csproj.GenerateResource.Cache
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\bin\Release\RPGGame.exe.config
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\bin\Release\RPGGame.exe
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\bin\Release\RPGGame.pdb
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Release\RPGGame.exe
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Release\RPGGame.pdb
+C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\bin\Release\RPGGame.exe.config
+C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Release\RPGGame.exe
+C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Release\RPGGame.pdb

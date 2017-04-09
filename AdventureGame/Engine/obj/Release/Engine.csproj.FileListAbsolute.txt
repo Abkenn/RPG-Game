@@ -1,0 +1,5 @@
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\Engine\bin\Release\Engine.dll
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\Engine\bin\Release\Engine.pdb
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\Engine\obj\Release\Engine.csprojResolveAssemblyReference.cache
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\Engine\obj\Release\Engine.dll
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\Engine\obj\Release\Engine.pdb

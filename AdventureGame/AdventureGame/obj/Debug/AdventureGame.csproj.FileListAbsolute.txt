@@ -1,0 +1,11 @@
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\bin\Debug\AdventureGame.exe.config
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\bin\Debug\AdventureGame.exe
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\bin\Debug\AdventureGame.pdb
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\bin\Debug\Engine.dll
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\bin\Debug\Engine.pdb
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Debug\AdventureGame.csprojResolveAssemblyReference.cache
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Debug\AdventureGame.Properties.Resources.resources
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Debug\AdventureGame.csproj.GenerateResource.Cache
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Debug\AdventureGame.exe
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Debug\AdventureGame.pdb
+C:\Users\Abken\Desktop\Programming\C#\AdventureGame\AdventureGame\AdventureGame\obj\Debug\AdventureGame.AdventureGameForm.resources
