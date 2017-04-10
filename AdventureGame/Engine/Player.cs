@@ -43,9 +43,9 @@ namespace Engine
             MaximumHitPoints = 2 * (Level * Level + 2 * Level - 1);
             switch(Level)
             {
-                case 1: MaximumHitPoints *= 5;
+                case 1: MaximumHitPoints = 10;
                     break;
-                case 2: MaximumHitPoints *= 3;
+                case 2: MaximumHitPoints = 21;
                     break;
                 case 3: MaximumHitPoints = 32;
                     break;
