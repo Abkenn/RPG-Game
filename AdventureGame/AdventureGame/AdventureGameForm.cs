@@ -98,7 +98,7 @@ namespace AdventureGame
                 rtbMessages.Text += "You defeated the " + currentEnemy.Name + Environment.NewLine;
 
                 // 2.4.2) Добави xp на играча
-                player.ExperiencePoints += currentEnemy.RewardExperiencePoints;
+                player.AddExperiencePoints(currentEnemy.RewardExperiencePoints);
                 rtbMessages.Text += "You receive " + currentEnemy.RewardExperiencePoints.ToString() + " experience points" + Environment.NewLine;
 
                 // 2.4.3) Добави gold на играча
@@ -293,7 +293,7 @@ namespace AdventureGame
                             rtbMessages.Text += Environment.NewLine;
 
                             //xp/gold награда
-                            player.ExperiencePoints += newLocation.QuestAvailableHere.RewardExperiencePoints;
+                            player.AddExperiencePoints(newLocation.QuestAvailableHere.RewardExperiencePoints);
                             player.Gold += newLocation.QuestAvailableHere.RewardGold;
 
                             // Добави Item награда, ако има такава (засега правя реализация със задължителен Item reward, примерно potion)
@@ -415,15 +415,9 @@ namespace AdventureGame
             List<Weapon> weapons = new List<Weapon>();
 
             foreach (InventoryItem inventoryItem in player.Inventory)
-            {
                 if (inventoryItem.Details is Weapon)
-                {
                     if (inventoryItem.Quantity > 0)
-                    {
                         weapons.Add((Weapon)inventoryItem.Details);
-                    }
-                }
-            }
 
             if (weapons.Count == 0)
             {
@@ -434,11 +428,17 @@ namespace AdventureGame
             else
             {
                 // 1.6.2) Визуализирай обновения списък с оръжия
+                cboWeapons.SelectedIndexChanged -= cboWeapons_SelectedIndexChanged; // функцията вдясно се случва автоматично, но не искаме това да стане преди set-ването на DataSource property-то, затова с този ред "изключваме" автоматичното викане на void функцията вдясно, която променихме да прави, каквото на нас ни е нужно
                 cboWeapons.DataSource = weapons;
+                cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged; // сега вече е нужно да "прикрепим" отново функцията да се "случва" винаги когато се "случи" събитието SelectedIndexChanged, тоест при смяна на избрано оръжие, след като е променен DataSource, да се сменя текущото оръжие с избраното по default, за да се реализира и в обратния случай - примерно при смяна на локация падащият списък да е избрал автоматично текущото оръжие (на даден индекс), а не винаги най-горният
+                // -= disconnect-ва функция към event, а += connect-ва отново функцията към event-a
                 cboWeapons.DisplayMember = "Name";
                 cboWeapons.ValueMember = "ID";
 
-                cboWeapons.SelectedIndex = 0;
+                if (player.CurrentWeapon != null)
+                    cboWeapons.SelectedItem = player.CurrentWeapon;
+                else
+                    cboWeapons.SelectedIndex = 0;
             }
         }
 
@@ -489,5 +489,11 @@ namespace AdventureGame
         {
             File.WriteAllText(PLAYER_DATA_FILE_NAME, player.ToXmlString());
         }
+
+        private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
+        }
+
     }
 }

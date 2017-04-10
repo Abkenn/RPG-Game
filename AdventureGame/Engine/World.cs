@@ -88,7 +88,7 @@ namespace Engine
                 new Quest(
                     QUEST_ID_HELP_LIBRARIAN,
                     "Kill the bandits in the librarian's Zen garden (some of them can have a stolen Black pearl)",
-                    "Kill the bandits in the library and bring back 3 Bandits' heads to the librarian for proof that you're not one of them. You will receive a healing potion and 10 gold.", 20, 10);
+                    "Kill the bandits in the library and bring back 3 Bandits' heads to the librarian for proof that you're not one of them. You will receive a healing potion and 10 gold.", 40, 20);
 
             helpLibrarian.QuestCompletionItems.Add(new QuestCompletionItem(ItemByID(ITEM_ID_BANDIT_HEAD), 3));
 
@@ -98,7 +98,7 @@ namespace Engine
                 new Quest(
                     QUEST_ID_CLEAR_FARMERS_FIELD,
                     "Clear the farmer's field",
-                    "Kill the serpents in the farmer's field and bring back 3 serpent fangs. You will receive an adventurer's pass and 20 gold pieces.", 20, 20);
+                    "Kill the serpents in the farmer's field and bring back 3 serpent fangs. You will receive an adventurer's pass and 20 gold pieces.", 30, 10);
 
             clearFarmersField.QuestCompletionItems.Add(new QuestCompletionItem(ItemByID(ITEM_ID_SERPENT_FANG), 3));
 
