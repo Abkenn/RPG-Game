@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,28 +16,40 @@ namespace AdventureGame
     {
         private Player player;
         private Enemy currentEnemy;
+        private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
 
         public AdventureGameForm()
         {
             InitializeComponent();
+
+            if (File.Exists(PLAYER_DATA_FILE_NAME))
+                player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
+            else
+                player = Player.CreateDefaultPlayer();
 
             //int ID = 1;
             //string Name = "Home";
             //string Description = "Home! Sweet Home!";
             //Location location = new Location(ID, Name, Description);
 
-            int CurrentHitPoints = 10;
-            int MaximumHitPoints = 10;
-            int Gold = 20;
-            int ExperiencePoints = 0;
-            int Level = 1;
+            //int CurrentHitPoints = 10;
+            //int MaximumHitPoints = 10;
+            //int Gold = 20;
+            //int ExperiencePoints = 0;
+            //int Level = 1;
 
-            player = new Player(CurrentHitPoints, MaximumHitPoints, Gold, ExperiencePoints, Level);
+            //player = new Player(CurrentHitPoints, MaximumHitPoints, Gold, ExperiencePoints);
 
-            MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
+            //MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
+            MoveTo(player.CurrentLocation);
 
-            player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_BROKEN_SWORD), 1));
+            //player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_BROKEN_SWORD), 1));
 
+            UpdatePlayerStats();
+        }
+
+        private void UpdatePlayerStats()
+        {
             lblHitPoints.Text = player.CurrentHitPoints.ToString();
             lblGold.Text = player.Gold.ToString();
             lblExperience.Text = player.ExperiencePoints.ToString();
@@ -459,6 +472,22 @@ namespace AdventureGame
 
                 cboPotions.SelectedIndex = 0;
             }
+        }
+
+        private void ScrollToBottomOfMessages()
+        {
+            rtbMessages.SelectionStart = rtbMessages.Text.Length;
+            rtbMessages.ScrollToCaret();
+        }
+
+        private void rtbMessages_TextChanged(object sender, EventArgs e)
+        {
+            ScrollToBottomOfMessages();
+        }
+
+        private void AdventureGameForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            File.WriteAllText(PLAYER_DATA_FILE_NAME, player.ToXmlString());
         }
     }
 }

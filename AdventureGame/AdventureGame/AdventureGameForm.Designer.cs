@@ -223,6 +223,7 @@
             this.rtbMessages.Size = new System.Drawing.Size(360, 286);
             this.rtbMessages.TabIndex = 18;
             this.rtbMessages.Text = "";
+            this.rtbMessages.TextChanged += new System.EventHandler(this.rtbMessages_TextChanged);
             // 
             // dgvInventory
             // 
@@ -284,6 +285,7 @@
             this.Controls.Add(this.label1);
             this.Name = "AdventureGameForm";
             this.Text = "Adventure Game";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AdventureGameForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).EndInit();
             this.ResumeLayout(false);
