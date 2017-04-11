@@ -131,10 +131,7 @@ namespace AdventureGame
                 }
 
                 // 2.4.5) Обнови потребителския интерфейс
-                lblHitPoints.Text = player.CurrentHitPoints.ToString();
-                lblGold.Text = player.Gold.ToString();
-                lblExperience.Text = player.ExperiencePoints.ToString();
-                lblLevel.Text = player.Level.ToString();
+                UpdatePlayerStats();
 
                 UpdateInventoryListInUI();
                 UpdateWeaponListInUI();
@@ -296,6 +293,7 @@ namespace AdventureGame
                             //xp/gold награда
                             player.AddExperiencePoints(newLocation.QuestAvailableHere.RewardExperiencePoints);
                             player.Gold += newLocation.QuestAvailableHere.RewardGold;
+                            UpdatePlayerStats();
 
                             // Добави Item награда, ако има такава (засега правя реализация със задължителен Item reward, примерно potion)
                             player.AddItemToInventory(newLocation.QuestAvailableHere.RewardItem);
