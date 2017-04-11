@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Engine
 {
@@ -18,8 +19,10 @@ namespace Engine
         public Location LocationToEast { get; set; }
         public Location LocationToSouth { get; set; }
         public Location LocationToWest { get; set; }
+        public Image MiniMap { get; set; }
+        public string ImagePath { get; set; }
 
-        public Location(int id, string name, string description, Item itemReqToEnter = null, Quest questAvailableHere = null, Enemy enemyLivingHere = null)
+        public Location(int id, string name, string description, string imagePath, Item itemReqToEnter = null, Quest questAvailableHere = null, Enemy enemyLivingHere = null)
         {
             ID = id;
             Name = name;
@@ -27,6 +30,9 @@ namespace Engine
             ItemRequiredToEnter = itemReqToEnter;
             QuestAvailableHere = questAvailableHere;
             EnemyLivingHere = enemyLivingHere;
+            ImagePath = imagePath;
+
+            MiniMap = Image.FromFile(ImagePath);
         }
     }
 }

@@ -111,27 +111,27 @@ namespace Engine
         private static void PopulateLocations()
         {
             // Create each location
-            Location home = new Location(LOCATION_ID_HOME, "Home", "Your house.");
+            Location home = new Location(LOCATION_ID_HOME, "Home", "Your house.", @"..\\..\\..\\Engine\\src\\game map\\Home.png");
 
-            Location townSquare = new Location(LOCATION_ID_TOWN_SQUARE, "Town square", "You see rats eating bird shits in the drained fountain.");
+            Location townSquare = new Location(LOCATION_ID_TOWN_SQUARE, "Town square", "You see rats eating bird shits in the drained fountain.", @"..\\..\\..\\Engine\\src\\game map\\TownSquare.png");
 
-            Location library = new Location(LOCATION_ID_LIBRARY, "Library", "*achoo* There are millions of books here!");
+            Location library = new Location(LOCATION_ID_LIBRARY, "Library", "*achoo* There are millions of books here!", @"..\\..\\..\\Engine\\src\\game map\\Library.png");
             library.QuestAvailableHere = QuestByID(QUEST_ID_HELP_LIBRARIAN);
 
-            Location zenGarden = new Location(LOCATION_ID_LIBRARIAN_ZEN_GARDEN, "Librarian's Zen garden", "Wow! Many plants are growing here. The fountain tho... Then you see them. Bandits!");
+            Location zenGarden = new Location(LOCATION_ID_LIBRARIAN_ZEN_GARDEN, "Librarian's Zen garden", "Wow! Many plants are growing here. The fountain tho... Then you see them. Bandits!", @"..\\..\\..\\Engine\\src\\game map\\ZenGarden.png");
             zenGarden.EnemyLivingHere = EnemyByID(ENEMY_ID_BANDIT);
 
-            Location farmhouse = new Location(LOCATION_ID_FARMHOUSE, "Farmhouse", "You see an old farmer in front of you.");
+            Location farmhouse = new Location(LOCATION_ID_FARMHOUSE, "Farmhouse", "You see an old farmer in front of you.", @"..\\..\\..\\Engine\\src\\game map\\Farm.png");
             farmhouse.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_FARMERS_FIELD);
 
-            Location farmersField = new Location(LOCATION_ID_FARM_FIELD, "Farmer's field", "You see rows of veggies growing here.");
+            Location farmersField = new Location(LOCATION_ID_FARM_FIELD, "Farmer's field", "You see rows of veggies growing here.", @"..\\..\\..\\Engine\\src\\game map\\Fields.png");
             farmersField.EnemyLivingHere = EnemyByID(ENEMY_ID_SERPENT);
 
-            Location guardPost = new Location(LOCATION_ID_GUARD_POST, "Guard post", "There is a large dude here. He asks your to show your key.", ItemByID(ITEM_ID_ADVENTURER_KEY));
+            Location guardPost = new Location(LOCATION_ID_GUARD_POST, "Guard post", "There is a large dude here. He asks your to show your key.", @"..\\..\\..\\Engine\\src\\game map\\GuardPost.png", ItemByID(ITEM_ID_ADVENTURER_KEY));
 
-            Location bridge = new Location(LOCATION_ID_BRIDGE, "Bridge", "A stone bridge crosses a wide river.");
+            Location bridge = new Location(LOCATION_ID_BRIDGE, "Bridge", "A stone bridge crosses a wide river.", @"..\\..\\..\\Engine\\src\\game map\\Bridge.png");
 
-            Location spiderWoods = new Location(LOCATION_ID_SPIDER_FIELD, "Forest", "You see spider webs all over the place, covering the trees, the grass, everywhere in the forest.");
+            Location spiderWoods = new Location(LOCATION_ID_SPIDER_FIELD, "Forest", "You see spider webs all over the place, covering the trees, the grass, everywhere in the forest.", @"..\\..\\..\\Engine\\src\\game map\\Forest.png");
             spiderWoods.EnemyLivingHere = EnemyByID(ENEMY_ID_GIANT_SPIDER);
 
             // Link the locations together

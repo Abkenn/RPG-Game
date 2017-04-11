@@ -20,3 +20,4 @@ C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Release\Adv
 C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Release\AdventureGame.AdventureGameForm.resources
 C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Release\AdventureGame.Properties.Resources.resources
 C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Release\AdventureGame.csproj.GenerateResource.Cache
+C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Release\AdventureGame.MinimapScreen.resources

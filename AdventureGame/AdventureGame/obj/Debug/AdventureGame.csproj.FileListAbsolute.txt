@@ -20,3 +20,4 @@ C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Debug\Adven
 C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Debug\AdventureGame.csproj.GenerateResource.Cache
 C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Debug\RPGGame.exe
 C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Debug\RPGGame.pdb
+C:\Users\Abken\Source\Repos\RPG-Game\AdventureGame\AdventureGame\obj\Debug\AdventureGame.MinimapScreen.resources

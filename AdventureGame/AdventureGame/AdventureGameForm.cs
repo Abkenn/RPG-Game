@@ -52,7 +52,8 @@ namespace AdventureGame
         {
             lblHitPoints.Text = player.CurrentHitPoints.ToString();
             lblGold.Text = player.Gold.ToString();
-            lblExperience.Text = player.ExperiencePoints.ToString();
+            string requiredXP = (10 * player.Level * player.Level + 90 * player.Level).ToString();
+            lblExperience.Text = player.ExperiencePoints.ToString() + " / " + requiredXP;
             lblLevel.Text = player.Level.ToString();
         }
 
@@ -493,6 +494,13 @@ namespace AdventureGame
         private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
         {
             player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
+        }
+
+        private void btnMinimap_Click(object sender, EventArgs e)
+        {
+            MinimapScreen minimapScreen = new MinimapScreen(player);
+            minimapScreen.StartPosition = FormStartPosition.CenterParent;
+            minimapScreen.ShowDialog(this);
         }
 
     }
