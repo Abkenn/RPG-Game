@@ -27,8 +27,8 @@ namespace AdventureGame
 
         private void MinimapScreen_Load(object sender, EventArgs e)
         {
-            string path = currentPlayer.CurrentLocation.ImagePath;
-            pictureBox1.ImageLocation = path;
+            Image image = currentPlayer.CurrentLocation.Minimap;
+            pictureBox1.Image = image;
             pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
 
             this.MinimumSize = new Size(143, 115);

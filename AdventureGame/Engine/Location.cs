@@ -19,10 +19,10 @@ namespace Engine
         public Location LocationToEast { get; set; }
         public Location LocationToSouth { get; set; }
         public Location LocationToWest { get; set; }
-        public Image MiniMap { get; set; }
-        public string ImagePath { get; set; }
+        public Image Minimap { get; set; }
+        //public string ImagePath { get; set; }
 
-        public Location(int id, string name, string description, string imagePath, Item itemReqToEnter = null, Quest questAvailableHere = null, Enemy enemyLivingHere = null)
+        public Location(int id, string name, string description, Image minimap, Item itemReqToEnter = null, Quest questAvailableHere = null, Enemy enemyLivingHere = null)
         {
             ID = id;
             Name = name;
@@ -30,9 +30,9 @@ namespace Engine
             ItemRequiredToEnter = itemReqToEnter;
             QuestAvailableHere = questAvailableHere;
             EnemyLivingHere = enemyLivingHere;
-            ImagePath = imagePath;
+            //ImagePath = imagePath;
 
-            MiniMap = Image.FromFile(ImagePath);
+            Minimap = minimap;
         }
     }
 }
