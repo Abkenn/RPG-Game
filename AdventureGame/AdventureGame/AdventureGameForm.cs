@@ -40,12 +40,25 @@ namespace AdventureGame
 
             //player = new Player(CurrentHitPoints, MaximumHitPoints, Gold, ExperiencePoints);
 
+            lblXPNeeded.Location = new Point(lblExperience.Right, lblExperience.Top);
+            lblXPNeeded.Text = player.XPNeeded.ToString();
+            label6.Visible = false;
+            lblXPNeeded.Visible = false;
+
+            lblHitPoints.DataBindings.Add("Text", player, "CurrentHitPoints");
+            lblGold.DataBindings.Add("Text", player, "Gold");
+            lblExperience.DataBindings.Add("Text", player, "ExperiencePoints");
+            lblXPNeeded.DataBindings.Add("Text", player, "XPNeeded");
+            lblLevel.DataBindings.Add("Text", player, "Level");
+
+            //UpdatePlayerStats();
+
             //MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             MoveTo(player.CurrentLocation);
 
             //player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_BROKEN_SWORD), 1));
 
-            UpdatePlayerStats();
+            
         }
 
         private void UpdatePlayerStats()
@@ -131,7 +144,7 @@ namespace AdventureGame
                 }
 
                 // 2.4.5) Обнови потребителския интерфейс
-                UpdatePlayerStats();
+                //UpdatePlayerStats();
 
                 UpdateInventoryListInUI();
                 UpdateWeaponListInUI();
@@ -157,7 +170,7 @@ namespace AdventureGame
                 player.CurrentHitPoints -= damageToPlayer;
 
                 // 2.5.3.1) Обнови потребителския интерфейс да показва новите стойности на HP
-                lblHitPoints.Text = player.CurrentHitPoints.ToString();
+                //lblHitPoints.Text = player.CurrentHitPoints.ToString();
 
                 // 2.5.4) Ако играчът е мъртъв
                 if(player.CurrentHitPoints <= 0)
@@ -218,7 +231,7 @@ namespace AdventureGame
             }
 
             // 3.6) Обнови потребителския интерфейс
-            lblHitPoints.Text = player.CurrentHitPoints.ToString();
+            //lblHitPoints.Text = player.CurrentHitPoints.ToString();
             UpdateInventoryListInUI();
             UpdatePotionListInUI();
         }
@@ -251,7 +264,7 @@ namespace AdventureGame
             player.CurrentHitPoints = player.MaximumHitPoints;
 
             // Отбележи промяната на HP на героя на екрана
-            lblHitPoints.Text = player.CurrentHitPoints.ToString();
+            //lblHitPoints.Text = player.CurrentHitPoints.ToString();
 
             // 1.2) Тази нова локация има ли quest?
             if (newLocation.QuestAvailableHere != null)
@@ -293,7 +306,7 @@ namespace AdventureGame
                             //xp/gold награда
                             player.AddExperiencePoints(newLocation.QuestAvailableHere.RewardExperiencePoints);
                             player.Gold += newLocation.QuestAvailableHere.RewardGold;
-                            UpdatePlayerStats();
+                            //UpdatePlayerStats();
 
                             // Добави Item награда, ако има такава (засега правя реализация със задължителен Item reward, примерно potion)
                             player.AddItemToInventory(newLocation.QuestAvailableHere.RewardItem);
@@ -501,5 +514,22 @@ namespace AdventureGame
             minimapScreen.ShowDialog(this);
         }
 
+        private void UpdateXPUI()
+        {
+            label6.Visible = true;
+            lblXPNeeded.Visible = true;
+            lblXPNeeded.Location = new Point(lblExperience.Right + 30, lblExperience.Top);
+            label6.Location = new Point(lblXPNeeded.Right, lblXPNeeded.Top);
+        }
+
+        private void lblXPNeeded_TextChanged(object sender, EventArgs e)
+        {
+            UpdateXPUI();
+        }
+
+        private void AdventureGameForm_Load(object sender, EventArgs e)
+        {
+            UpdateXPUI();
+        }
     }
 }

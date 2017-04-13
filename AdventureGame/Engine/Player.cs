@@ -9,8 +9,34 @@ namespace Engine
 {
     public class Player : LivingCreature
     {
-        public int Gold { get; set; }
-        public int ExperiencePoints { get; private set; }
+        private int gold;
+
+        public int Gold
+        {
+            get { return gold; }
+            set
+            {
+                gold = value;
+                OnPropertyChanged("Gold");
+            }
+        }
+
+        private int experiencePoints;
+
+        public int ExperiencePoints
+        {
+            get { return experiencePoints; }
+            private set
+            {
+                experiencePoints = value;
+                OnPropertyChanged("ExperiencePoints");
+                OnPropertyChanged("Level"); // тук subsrcribe-ваме и Level property-то към събитието, защото нямаме set на Level, единствено го взимаме през get като калкулираме get return-a чрез ExperiencePoints, a и е по-логично при смяна на XP да ъпдейтваме и Level-a, за да не се пропусне евентуално при промяна в level-a спрямо XP, да се ъпдейт и level-a, 2 notifications за 2 различни properties не е добре да се изпращат през 1 property, но проекта е малък и може да се следи за евентуални бъгове, породени от този факт
+                OnPropertyChanged("XPNeeded");
+            }
+        }
+
+        public int XPNeeded { get { return 10 * Level * Level + 90 * Level - ExperiencePoints; } }
+
         //public int Level { get { return ((ExperiencePoints / 100) + 1); } }
         public int Level { get { return (int) Math.Floor(((-90 + Math.Sqrt(8100 + 40 * ExperiencePoints)) / 20 + 1)); } } // xp = 10level^2 + 90level е формулата, ама +1 level, за да не почва от 0
         public List<InventoryItem> Inventory { get; set; }

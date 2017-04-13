@@ -50,6 +50,8 @@
             this.dgvInventory = new System.Windows.Forms.DataGridView();
             this.dgvQuests = new System.Windows.Forms.DataGridView();
             this.btnMinimap = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.lblXPNeeded = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).BeginInit();
             this.SuspendLayout();
@@ -109,7 +111,7 @@
             // lblExperience
             // 
             this.lblExperience.AutoSize = true;
-            this.lblExperience.Location = new System.Drawing.Point(110, 73);
+            this.lblExperience.Location = new System.Drawing.Point(110, 74);
             this.lblExperience.Name = "lblExperience";
             this.lblExperience.Size = new System.Drawing.Size(0, 13);
             this.lblExperience.TabIndex = 6;
@@ -268,11 +270,32 @@
             this.btnMinimap.UseVisualStyleBackColor = true;
             this.btnMinimap.Click += new System.EventHandler(this.btnMinimap_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(153, 74);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(121, 13);
+            this.label6.TabIndex = 22;
+            this.label6.Text = "(XP needed for level up)";
+            this.label6.Visible = false;
+            // 
+            // lblXPNeeded
+            // 
+            this.lblXPNeeded.AutoSize = true;
+            this.lblXPNeeded.Location = new System.Drawing.Point(153, 74);
+            this.lblXPNeeded.Name = "lblXPNeeded";
+            this.lblXPNeeded.Size = new System.Drawing.Size(0, 13);
+            this.lblXPNeeded.TabIndex = 23;
+            this.lblXPNeeded.TextChanged += new System.EventHandler(this.lblXPNeeded_TextChanged);
+            // 
             // AdventureGameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(719, 651);
+            this.Controls.Add(this.lblXPNeeded);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.btnMinimap);
             this.Controls.Add(this.dgvQuests);
             this.Controls.Add(this.dgvInventory);
@@ -298,6 +321,7 @@
             this.Name = "AdventureGameForm";
             this.Text = "RPG Game by Abken";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AdventureGameForm_FormClosing);
+            this.Load += new System.EventHandler(this.AdventureGameForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).EndInit();
             this.ResumeLayout(false);
@@ -329,6 +353,8 @@
         private System.Windows.Forms.DataGridView dgvInventory;
         private System.Windows.Forms.DataGridView dgvQuests;
         private System.Windows.Forms.Button btnMinimap;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblXPNeeded;
     }
 }
 
