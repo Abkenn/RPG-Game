@@ -18,6 +18,7 @@ namespace AdventureGame
         private Enemy currentEnemy;
         private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
 
+
         public AdventureGameForm()
         {
             InitializeComponent();
@@ -40,6 +41,8 @@ namespace AdventureGame
 
             //player = new Player(CurrentHitPoints, MaximumHitPoints, Gold, ExperiencePoints);
 
+            // Update Player Stats in UI
+
             lblXPNeeded.Location = new Point(lblExperience.Right, lblExperience.Top);
             lblXPNeeded.Text = player.XPNeeded.ToString();
             label6.Visible = false;
@@ -51,7 +54,46 @@ namespace AdventureGame
             lblXPNeeded.DataBindings.Add("Text", player, "XPNeeded");
             lblLevel.DataBindings.Add("Text", player, "Level");
 
-            //UpdatePlayerStats();
+            // Update the Inventory in UI
+
+            dgvInventory.RowHeadersVisible = false;
+            dgvInventory.AutoGenerateColumns = false;
+
+            dgvInventory.DataSource = player.Inventory;
+
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Name",
+                Width = 197,
+                DataPropertyName = "Description"
+            });
+
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Quantity",
+                DataPropertyName = "Quantity"
+            });
+
+            // Update Quest List in UI
+
+            dgvQuests.RowHeadersVisible = false;
+            dgvQuests.AutoGenerateColumns = false;
+
+            dgvQuests.DataSource = player.Quests;
+
+            dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Name",
+                Width = 197,
+                DataPropertyName = "Name"
+            });
+
+            dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Done?",
+                DataPropertyName = "IsCompleted"
+            });
+
 
             //MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             MoveTo(player.CurrentLocation);
@@ -60,6 +102,7 @@ namespace AdventureGame
 
             
         }
+
 
         private void UpdatePlayerStats()
         {
@@ -146,7 +189,7 @@ namespace AdventureGame
                 // 2.4.5) Обнови потребителския интерфейс
                 //UpdatePlayerStats();
 
-                UpdateInventoryListInUI();
+                //UpdateInventoryListInUI();
                 UpdateWeaponListInUI();
                 UpdatePotionListInUI();
 
@@ -232,7 +275,7 @@ namespace AdventureGame
 
             // 3.6) Обнови потребителския интерфейс
             //lblHitPoints.Text = player.CurrentHitPoints.ToString();
-            UpdateInventoryListInUI();
+            //UpdateInventoryListInUI();
             UpdatePotionListInUI();
         }
 
@@ -373,10 +416,10 @@ namespace AdventureGame
             }
 
             // 1.4) Обнови Inventory
-            UpdateInventoryListInUI();
+            //UpdateInventoryListInUI();
 
             // 1.5) Oбнови quest log
-            UpdateQuestListInUI();
+            //UpdateQuestListInUI();
 
             // 1.6) Oбнови списъка с оръжията и в момента equipped (weapons' combobox)
             UpdateWeaponListInUI();
@@ -385,7 +428,7 @@ namespace AdventureGame
             UpdatePotionListInUI();
         }
 
-        private void UpdateInventoryListInUI()
+        /*private void UpdateInventoryListInUI()
         {
             dgvInventory.RowHeadersVisible = false;
 
@@ -397,15 +440,11 @@ namespace AdventureGame
             dgvInventory.Rows.Clear();
 
             foreach (InventoryItem inventoryItem in player.Inventory)
-            {
                 if (inventoryItem.Quantity > 0)
-                {
                     dgvInventory.Rows.Add(new[] { inventoryItem.Details.Name, inventoryItem.Quantity.ToString() });
-                }
-            }
-        }
+        } */
 
-        private void UpdateQuestListInUI()
+        /*private void UpdateQuestListInUI()
         {
             dgvQuests.RowHeadersVisible = false;
 
@@ -417,10 +456,8 @@ namespace AdventureGame
             dgvQuests.Rows.Clear();
 
             foreach (PlayerQuest playerQuest in player.Quests)
-            {
                 dgvQuests.Rows.Add(new[] { playerQuest.Details.Name, playerQuest.IsCompleted.ToString() });
-            }
-        }
+        }*/
 
         private void UpdateWeaponListInUI()
         {

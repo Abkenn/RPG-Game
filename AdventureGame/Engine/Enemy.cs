@@ -15,6 +15,7 @@ namespace Engine
         public int RewardGold { get; set; }
         public List<LootItem> LootTable { get; set; }
 
+
         public Enemy(int id, string name, int maximumDamage, int rewardXP, int rewardGold, int currentHP, int maximumHP) : base(currentHP, maximumHP)
         {
             ID = id;
@@ -25,5 +26,6 @@ namespace Engine
 
             LootTable = new List<LootItem>();
         }
+
     }
 }

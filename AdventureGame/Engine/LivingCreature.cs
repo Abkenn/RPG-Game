@@ -10,7 +10,6 @@ namespace Engine
     public class LivingCreature : INotifyPropertyChanged
     {
         private int currentHitPoints;
-
         public int CurrentHitPoints
         {
             get { return currentHitPoints; }

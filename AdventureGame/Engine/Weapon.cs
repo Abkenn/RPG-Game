@@ -16,5 +16,6 @@ namespace Engine
             MinimumDamage = minimumDamage;
             MaximumDamage = maximumDamage;
         }
+
     }
 }

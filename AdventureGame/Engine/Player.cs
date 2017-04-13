@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,6 @@ namespace Engine
     public class Player : LivingCreature
     {
         private int gold;
-
         public int Gold
         {
             get { return gold; }
@@ -22,7 +22,6 @@ namespace Engine
         }
 
         private int experiencePoints;
-
         public int ExperiencePoints
         {
             get { return experiencePoints; }
@@ -36,23 +35,22 @@ namespace Engine
         }
 
         public int XPNeeded { get { return 10 * Level * Level + 90 * Level - ExperiencePoints; } }
-
-        //public int Level { get { return ((ExperiencePoints / 100) + 1); } }
         public int Level { get { return (int) Math.Floor(((-90 + Math.Sqrt(8100 + 40 * ExperiencePoints)) / 20 + 1)); } } // xp = 10level^2 + 90level е формулата, ама +1 level, за да не почва от 0
-        public List<InventoryItem> Inventory { get; set; }
-        public List<PlayerQuest> Quests { get; set; }
+        public BindingList<InventoryItem> Inventory { get; set; }
+        public BindingList<PlayerQuest> Quests { get; set; }
         public Location CurrentLocation { get; set; }
         public Weapon CurrentWeapon { get; set; }
+
 
         private Player(int currentHP, int maximumHP, int gold, int xp) : base(currentHP, maximumHP)
         {
             Gold = gold;
             ExperiencePoints = xp;
-            //Level = level;
 
-            Inventory = new List<InventoryItem>();
-            Quests = new List<PlayerQuest>();
+            Inventory = new BindingList<InventoryItem>();
+            Quests = new BindingList<PlayerQuest>();
         }
+
 
         public static Player CreateDefaultPlayer()
         {
@@ -77,6 +75,75 @@ namespace Engine
                     break;
             }
         }
+
+        public bool HasRequiredItemToEnterThisLocation(Location location)
+        {
+            if (location.ItemRequiredToEnter == null)
+            {
+                // Няма required items за тази локация, така че излез с true
+                return true;
+            }
+            // Намерен е предмет от Inventory (true) или 1.1.1) Играчът няма нужният предмет за преминаване (false), при false е нужно съобщение
+            return Inventory.Any(ii => ii.Details.ID == location.ItemRequiredToEnter.ID);
+        }
+
+        public bool HasThisQuest(Quest quest)
+        {
+            foreach (PlayerQuest playerQuest in Quests)
+                if (playerQuest.Details.ID == quest.ID)
+                    return true;
+            return false;
+        }
+
+        public bool CompletedThisQuest(Quest quest)
+        {
+            foreach (PlayerQuest playerQuest in Quests)
+                if (playerQuest.Details.ID == quest.ID)
+                    return playerQuest.IsCompleted;
+            return false;
+        }
+
+        public bool HasAllQuestCompletionItems(Quest quest)
+        {
+            // Обхожда цялото Inventory, за да провери дали играчът притежава quest item и дали има нужната бройка да завърши quest-a
+            foreach (QuestCompletionItem qci in quest.QuestCompletionItems)
+                if (!Inventory.Any(ii => ii.Details.ID == qci.Details.ID && ii.Quantity >= qci.Quantity))
+                    return false;
+
+            // Щом все още не сме излезли от функцията, значи играчът има нужният item и достатъчна бройка от него, за да приключи Quest-a
+            return true;
+        }
+
+        public void RemoveQuestCompletionItems(Quest quest)
+        {
+            foreach (QuestCompletionItem qci in quest.QuestCompletionItems)
+            {
+                InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == qci.Details.ID);
+                // Извади нужния брой quest items от броя им в Inventory 
+                if (item != null)
+                    item.Quantity -= qci.Quantity;
+            }
+        }
+
+        public void AddItemToInventory(Item itemToAdd)
+        {
+            // Обхожда Inventory, за да провери дали reward item-a го няма вече в Inventory
+            InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToAdd.ID);
+
+            if (item == null) // RewardItem не се съдържа в Inventory щом все още сме във функцията, така че добави reward item-a като нов InventoryItem (в нов слот) с брой 1
+                Inventory.Add(new InventoryItem(itemToAdd, 1));
+            else // RewardItem се съдържа в Inventory, затова само увеличи броя с 1
+                item.Quantity++;
+        }
+
+        public void MarkQuestCompleted(Quest quest)
+        {
+            // Обходи списъка с quests и намери quest-ът, който току що завърши
+            PlayerQuest playerQuest = Quests.SingleOrDefault(pq => pq.Details.ID == quest.ID);
+            if (playerQuest != null)
+                playerQuest.IsCompleted = true; // Отбележи го като completed
+        }
+
 
         public static Player CreatePlayerFromXmlString(string xmlPlayerData)
         {
@@ -214,74 +281,6 @@ namespace Engine
             }
 
             return playerData.InnerXml; // XML document
-        }
-
-        public bool HasRequiredItemToEnterThisLocation(Location location)
-        {
-            if (location.ItemRequiredToEnter == null)
-            {
-                // Няма required items за тази локация, така че излез с true
-                return true;
-            }
-            // Намерен е предмет от Inventory (true) или 1.1.1) Играчът няма нужният предмет за преминаване (false), при false е нужно съобщение
-            return Inventory.Exists(ii => ii.Details.ID == location.ItemRequiredToEnter.ID);
-        }
-
-        public bool HasThisQuest(Quest quest)
-        {
-            foreach (PlayerQuest playerQuest in Quests)
-                if (playerQuest.Details.ID == quest.ID)
-                    return true;
-            return false;
-        }
-
-        public bool CompletedThisQuest(Quest quest)
-        {
-            foreach (PlayerQuest playerQuest in Quests)
-                if (playerQuest.Details.ID == quest.ID)
-                    return playerQuest.IsCompleted;
-            return false;
-        }
-
-        public bool HasAllQuestCompletionItems(Quest quest)
-        {
-            // Обхожда цялото Inventory, за да провери дали играчът притежава quest item и дали има нужната бройка да завърши quest-a
-            foreach (QuestCompletionItem qci in quest.QuestCompletionItems)
-                if (!Inventory.Exists(ii => ii.Details.ID == qci.Details.ID && ii.Quantity >= qci.Quantity))
-                    return false;
-
-            // Щом все още не сме излезли от функцията, значи играчът има нужният item и достатъчна бройка от него, за да приключи Quest-a
-            return true;
-        }
-
-        public void RemoveQuestCompletionItems(Quest quest)
-        {
-            foreach (QuestCompletionItem qci in quest.QuestCompletionItems)
-            {
-                InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == qci.Details.ID);
-                // Извади нужния брой quest items от броя им в Inventory 
-                if (item != null)
-                    item.Quantity -= qci.Quantity;
-            }
-        }
-
-        public void AddItemToInventory(Item itemToAdd)
-        {
-            // Обхожда Inventory, за да провери дали reward item-a го няма вече в Inventory
-            InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToAdd.ID);
-
-            if (item == null) // RewardItem не се съдържа в Inventory щом все още сме във функцията, така че добави reward item-a като нов InventoryItem (в нов слот) с брой 1
-                Inventory.Add(new InventoryItem(itemToAdd, 1));
-            else // RewardItem се съдържа в Inventory, затова само увеличи броя с 1
-                item.Quantity++; 
-        }
-
-        public void MarkQuestCompleted(Quest quest)
-        {
-            // Обходи списъка с quests и намери quest-ът, който току що завърши
-            PlayerQuest playerQuest = Quests.SingleOrDefault(pq => pq.Details.ID == quest.ID);
-            if (playerQuest != null)
-                playerQuest.IsCompleted = true; // Отбележи го като completed
         }
 
     }

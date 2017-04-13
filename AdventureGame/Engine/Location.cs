@@ -20,7 +20,7 @@ namespace Engine
         public Location LocationToSouth { get; set; }
         public Location LocationToWest { get; set; }
         public Image Minimap { get; set; }
-        //public string ImagePath { get; set; }
+
 
         public Location(int id, string name, string description, Image minimap, Item itemReqToEnter = null, Quest questAvailableHere = null, Enemy enemyLivingHere = null)
         {
@@ -30,9 +30,9 @@ namespace Engine
             ItemRequiredToEnter = itemReqToEnter;
             QuestAvailableHere = questAvailableHere;
             EnemyLivingHere = enemyLivingHere;
-            //ImagePath = imagePath;
 
             Minimap = minimap;
         }
+
     }
 }

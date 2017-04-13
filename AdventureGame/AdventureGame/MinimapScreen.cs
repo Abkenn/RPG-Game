@@ -14,6 +14,8 @@ namespace AdventureGame
     public partial class MinimapScreen : Form
     {
         private Player currentPlayer;
+
+
         public MinimapScreen(Player player)
         {
             InitializeComponent();
@@ -24,6 +26,7 @@ namespace AdventureGame
             this.MinimizeBox = false;
             this.MaximizeBox = false;
         }
+
 
         private void MinimapScreen_Load(object sender, EventArgs e)
         {
@@ -36,5 +39,6 @@ namespace AdventureGame
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             this.Opacity = 0.7;
         }
+
     }
 }
