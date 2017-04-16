@@ -94,6 +94,23 @@ namespace AdventureGame
                 DataPropertyName = "IsCompleted"
             });
 
+            // Bind the comboboxes
+
+            cboWeapons.DataSource = player.Weapons;
+            cboWeapons.DisplayMember = "Name";
+            cboWeapons.ValueMember = "Id";
+
+            if (player.CurrentWeapon != null)
+                cboWeapons.SelectedItem = player.CurrentWeapon;
+
+            cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged; // прикрепяме при смяна на оръжие да се променя текущия избран weapon от комбобокса
+
+            cboPotions.DataSource = player.Potions;
+            cboPotions.DisplayMember = "Name";
+            cboPotions.ValueMember = "Id";
+
+            player.PropertyChanged += PlayerOnPropertyChanged;
+
 
             //MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             MoveTo(player.CurrentLocation);
@@ -190,8 +207,8 @@ namespace AdventureGame
                 //UpdatePlayerStats();
 
                 //UpdateInventoryListInUI();
-                UpdateWeaponListInUI();
-                UpdatePotionListInUI();
+                //UpdateWeaponListInUI();
+                //UpdatePotionListInUI();
 
                 // Нов ред в съобщенията
                 rtbMessages.Text += Environment.NewLine;
@@ -240,14 +257,7 @@ namespace AdventureGame
                 player.CurrentHitPoints = player.MaximumHitPoints;
 
             // 3.3) Премахни използвания potion от Inventory
-            foreach(InventoryItem ii in player.Inventory)
-            {
-                if(ii.Details.ID == potion.ID)
-                {
-                    ii.Quantity--;
-                    break;
-                }
-            }
+            player.RemoveItemFromInventory(potion, 1);
 
             // 3.4) Изведи съобщение
             rtbMessages.Text += "You drink a " + potion.Name + Environment.NewLine;
@@ -276,7 +286,7 @@ namespace AdventureGame
             // 3.6) Обнови потребителския интерфейс
             //lblHitPoints.Text = player.CurrentHitPoints.ToString();
             //UpdateInventoryListInUI();
-            UpdatePotionListInUI();
+            //UpdatePotionListInUI();
         }
 
         private void MoveTo(Location newLocation)
@@ -398,10 +408,10 @@ namespace AdventureGame
                 }
 
                 // 1.3.1.3) Обнови потребителския интерфейс
-                cboWeapons.Visible = true;
-                cboPotions.Visible = true;
-                btnUseWeapon.Visible = true;
-                btnUsePotion.Visible = true;
+                cboWeapons.Visible = player.Weapons.Any();
+                cboPotions.Visible = player.Potions.Any();
+                btnUseWeapon.Visible = player.Weapons.Any();
+                btnUsePotion.Visible = player.Potions.Any();
             }
             else
             {
@@ -422,10 +432,10 @@ namespace AdventureGame
             //UpdateQuestListInUI();
 
             // 1.6) Oбнови списъка с оръжията и в момента equipped (weapons' combobox)
-            UpdateWeaponListInUI();
+            //UpdateWeaponListInUI();
 
             // 1.7) Oбнови списъка с Potions
-            UpdatePotionListInUI();
+            //UpdatePotionListInUI();
         }
 
         /*private void UpdateInventoryListInUI()
@@ -459,7 +469,33 @@ namespace AdventureGame
                 dgvQuests.Rows.Add(new[] { playerQuest.Details.Name, playerQuest.IsCompleted.ToString() });
         }*/
 
-        private void UpdateWeaponListInUI()
+
+        private void PlayerOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "Weapons") // проверява кое property от player е било променено и проверява в случая първо за weapons, после за potions
+            {
+                cboWeapons.DataSource = player.Weapons;
+
+                if (!player.Weapons.Any())
+                {
+                    cboWeapons.Visible = false;
+                    btnUseWeapon.Visible = false;
+                }
+            }
+
+            if (propertyChangedEventArgs.PropertyName == "Potions")
+            {
+                cboPotions.DataSource = player.Potions;
+
+                if (!player.Potions.Any())
+                {
+                    cboPotions.Visible = false;
+                    btnUsePotion.Visible = false;
+                }
+            }
+        }
+
+        /*private void UpdateWeaponListInUI()
         {
             List<Weapon> weapons = new List<Weapon>();
 
@@ -489,9 +525,9 @@ namespace AdventureGame
                 else
                     cboWeapons.SelectedIndex = 0;
             }
-        }
+        }*/
 
-        private void UpdatePotionListInUI()
+        /*private void UpdatePotionListInUI()
         {
             List<HealingPotion> healingPotions = new List<HealingPotion>();
 
@@ -521,7 +557,7 @@ namespace AdventureGame
 
                 cboPotions.SelectedIndex = 0;
             }
-        }
+        }*/
 
         private void ScrollToBottomOfMessages()
         {

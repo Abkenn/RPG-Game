@@ -40,6 +40,8 @@ namespace Engine
         public BindingList<PlayerQuest> Quests { get; set; }
         public Location CurrentLocation { get; set; }
         public Weapon CurrentWeapon { get; set; }
+        public List<Weapon> Weapons { get { return Inventory.Where(x => x.Details is Weapon).Select(x => x.Details as Weapon).ToList(); } }
+        public List<HealingPotion> Potions { get { return Inventory.Where(x => x.Details is HealingPotion).Select(x => x.Details as HealingPotion).ToList(); } }
 
 
         private Player(int currentHP, int maximumHP, int gold, int xp) : base(currentHP, maximumHP)
@@ -121,19 +123,57 @@ namespace Engine
                 InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == qci.Details.ID);
                 // Извади нужния брой quest items от броя им в Inventory 
                 if (item != null)
-                    item.Quantity -= qci.Quantity;
+                    RemoveItemFromInventory(item.Details, qci.Quantity);
             }
         }
 
-        public void AddItemToInventory(Item itemToAdd)
+        public void AddItemToInventory(Item itemToAdd, int quantity = 1)
         {
             // Обхожда Inventory, за да провери дали reward item-a го няма вече в Inventory
             InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToAdd.ID);
 
-            if (item == null) // RewardItem не се съдържа в Inventory щом все още сме във функцията, така че добави reward item-a като нов InventoryItem (в нов слот) с брой 1
-                Inventory.Add(new InventoryItem(itemToAdd, 1));
+            if (item == null) // RewardItem не се съдържа в Inventory щом все още сме във функцията, така че добави reward item-a като нов InventoryItem (в нов слот) с брой 1 по default
+                Inventory.Add(new InventoryItem(itemToAdd, quantity));
             else // RewardItem се съдържа в Inventory, затова само увеличи броя с 1
                 item.Quantity++;
+            RaiseInventoryChangedEvent(itemToAdd);
+        }
+
+        public void RemoveItemFromInventory(Item itemToRemove, int quantity = 1)
+        {
+            InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToRemove.ID);
+
+            if (item == null)
+            {
+                //TODO: тук трябва да се изведе грешка, че избраният предмет не е в Inventory (нито potion, нито weapon)
+            }
+            else
+            {
+                // Предметът се съдържа в Inventory, намали Quantity с избрано quantity
+                item.Quantity -= quantity;
+
+                // Не трябва да имаме отрицателно количество
+                if (item.Quantity < 0)
+                {
+                    //TODO: тук отново трябва да се изведе грешка
+                    item.Quantity = 0;
+                }
+
+                // А ако количеството е 0, трябва да се премахне дадения предмет от "слота"
+                if (item.Quantity == 0)
+                    Inventory.Remove(item);
+
+                // Извикай функцията, която ще изпрати notification да се обнови екрана за промяна в Inventory (Weapons или Potions)
+                RaiseInventoryChangedEvent(itemToRemove);
+            }
+        }
+
+        private void RaiseInventoryChangedEvent(Item item)
+        {
+            if (item is Weapon)
+                OnPropertyChanged("Weapons");
+            if (item is HealingPotion)
+                OnPropertyChanged("Potions");
         }
 
         public void MarkQuestCompleted(Quest quest)
