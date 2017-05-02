@@ -35,13 +35,28 @@ namespace Engine
         }
 
         public int XPNeeded { get { return 10 * Level * Level + 90 * Level - ExperiencePoints; } }
-        public int Level { get { return (int) Math.Floor(((-90 + Math.Sqrt(8100 + 40 * ExperiencePoints)) / 20 + 1)); } } // xp = 10level^2 + 90level е формулата, ама +1 level, за да не почва от 0
+        public int Level { get { return (int)Math.Floor(((-90 + Math.Sqrt(8100 + 40 * ExperiencePoints)) / 20 + 1)); } } // xp = 10level^2 + 90level е формулата, ама +1 level, за да не почва от 0
+
+        private Location currentLocation;
+        public Location CurrentLocation
+        {
+            get { return currentLocation; }
+            set
+            {
+                currentLocation = value;
+                OnPropertyChanged("CurrentLocation");
+            }
+        }
+
+        private Enemy currentEnemy;
+
+        public Weapon CurrentWeapon { get; set; }
         public BindingList<InventoryItem> Inventory { get; set; }
         public BindingList<PlayerQuest> Quests { get; set; }
-        public Location CurrentLocation { get; set; }
-        public Weapon CurrentWeapon { get; set; }
         public List<Weapon> Weapons { get { return Inventory.Where(x => x.Details is Weapon).Select(x => x.Details as Weapon).ToList(); } }
         public List<HealingPotion> Potions { get { return Inventory.Where(x => x.Details is HealingPotion).Select(x => x.Details as HealingPotion).ToList(); } }
+
+        public event EventHandler<MessageEventArgs> OnMessage;
 
 
         private Player(int currentHP, int maximumHP, int gold, int xp) : base(currentHP, maximumHP)
@@ -63,17 +78,295 @@ namespace Engine
             return player;
         }
 
+        private void RaiseMessage(string message, bool addExtraNewLine = false)
+        {
+            OnMessage?.Invoke(this, new MessageEventArgs(message, addExtraNewLine));
+        }
+
+        public void MoveTo(Location newLocation)
+        {
+            // 1.1) Новото място има ли критерии (required items)?
+            if (!HasRequiredItemToEnterThisLocation(newLocation))
+            {
+                // 1.1.1) Играчът няма нужният предмет за преминаване, следователно извежда съобщение и прекъсва Moving процеса (излиза от MoveTo функцията)
+                //rtbMessages.Text += "You must have a " + newLocation.ItemRequiredToEnter.Name + " to enter this location." + Environment.NewLine;
+                RaiseMessage("You must have a " + newLocation.ItemRequiredToEnter.Name + " to enter this location.");
+                return;
+            }
+            // 1.1.2) Играчът има нужният предмет за преминаване щом не е минал през горния return
+
+            // Обнови местоположението на играча
+            CurrentLocation = newLocation;
+
+            // 100% heal повреме на транспорта (героят се чувства отпочинал и зареден)
+            CurrentHitPoints = MaximumHitPoints;
+
+            // Отбележи промяната на HP на героя на екрана
+            //lblHitPoints.Text = player.CurrentHitPoints.ToString();
+
+            // 1.2) Тази нова локация има ли quest?
+            if (newLocation.QuestAvailableHere != null)
+            {
+                // 1.2.1) Играчът притежава ли този quest
+
+                //флаг дали играчът притежава quest-а
+                bool playerAlreadyHasQuest = HasThisQuest(newLocation.QuestAvailableHere);
+                //флаг дали играчът е завършил quest-a
+                bool playerAlreadyCompletedQuest = CompletedThisQuest(newLocation.QuestAvailableHere);
+
+                // Ако играчът притежава quest-a
+                if (playerAlreadyHasQuest)
+                {
+                    // Играчът не е проверявал дали quest-a е завършен и все още е маркиран като незавършен
+                    if (!playerAlreadyCompletedQuest)
+                    {
+                        // Флаг дали играчът притежава ВСИЧКИ (като бройка) quest items, нужни като критерии за завършването на quest-a
+                        bool playerHasAllItemsToCompleteQuest = HasAllQuestCompletionItems(newLocation.QuestAvailableHere);
+
+                        // 1.2.1.1.1.1) Играчът е изпълнил критериите за завършване на quest
+                        if (playerHasAllItemsToCompleteQuest)
+                        {
+                            // 1.2.1.1.1.1.1) Изведи съобщение
+                            RaiseMessage(""); // за да добави нов ред
+                            RaiseMessage("You complete the '" + newLocation.QuestAvailableHere.Name + "' quest.");
+
+                            // 1.2.1.1.1.1.2) Премахни quest items от Inventory на играча
+                            RemoveQuestCompletionItems(newLocation.QuestAvailableHere);
+
+                            // 1.2.1.1.1.1.3) Дай награда (увеличи gold, xp и евентуално добави Item/s в Inventory)
+                            // Съобщение
+                            RaiseMessage("You receive: ");
+                            RaiseMessage(newLocation.QuestAvailableHere.RewardExperiencePoints + " experience points");
+                            RaiseMessage(newLocation.QuestAvailableHere.RewardGold + " gold");
+                            RaiseMessage(newLocation.QuestAvailableHere.RewardItem.Name, true); // addExtraNewLine=true, за да добави допълнителен празен ред накрая
+
+                            //xp/gold награда
+                            AddExperiencePoints(newLocation.QuestAvailableHere.RewardExperiencePoints);
+                            Gold += newLocation.QuestAvailableHere.RewardGold;
+                            //UpdatePlayerStats();
+
+                            // Добави Item награда, ако има такава (засега правя реализация със задължителен Item reward, примерно potion)
+                            AddItemToInventory(newLocation.QuestAvailableHere.RewardItem);
+
+                            // 1.2.1.1.1.1.3) Маркирай quest-a като завършен (completed)
+                            MarkQuestCompleted(newLocation.QuestAvailableHere);
+                        }
+                    }
+                }
+                else
+                {
+                    // 1.2.2) Играчът няма в quest log-a дадения quest
+
+                    // 1.2.2.1) Изведи съобщение
+                    RaiseMessage("You receive the " + newLocation.QuestAvailableHere.Name + " quest.");
+                    RaiseMessage(newLocation.QuestAvailableHere.Description);
+                    RaiseMessage("To complete it, return with:");
+                    foreach (QuestCompletionItem qci in newLocation.QuestAvailableHere.QuestCompletionItems)
+                    {
+                        if (qci.Quantity == 1)
+                            RaiseMessage(qci.Quantity + " " + qci.Details.Name);
+                        else
+                            RaiseMessage(qci.Quantity + " " + qci.Details.NamePlural);
+                    }
+                    RaiseMessage("");
+
+                    // 1.2.2.2) Добави го в quest log-a
+                    Quests.Add(new PlayerQuest(newLocation.QuestAvailableHere));
+                }
+            }
+
+            // 1.3) Тази нова локация има ли enemy (enemies)?
+            if (newLocation.EnemyLivingHere != null)
+            {
+                // 1.3.1.1) Съобщение
+                RaiseMessage("You see a " + newLocation.EnemyLivingHere.Name);
+
+                // 1.3.1.2) Създай противник, използвайки стойностите на стандартен противник от списъка с противници World.Enemies
+                Enemy standardEnemy = World.EnemyByID(newLocation.EnemyLivingHere.ID);
+
+                currentEnemy = new Enemy(standardEnemy.ID, standardEnemy.Name, standardEnemy.MaximumDamage, standardEnemy.RewardExperiencePoints, standardEnemy.RewardGold, standardEnemy.CurrentHitPoints, standardEnemy.MaximumHitPoints);
+
+                foreach (LootItem lootItem in standardEnemy.LootTable)
+                    currentEnemy.LootTable.Add(lootItem);
+
+                // 1.3.1.3) Обнови потребителския интерфейс
+                // автоматично с propertychanged event
+            }
+            else
+            {
+                // 1.3.2) Ако няма enemy
+                currentEnemy = null;
+
+                // 1.3.2.1) Скрий опциите за атака
+                // автоматично
+            }
+
+            // 1.4) Обнови Inventory
+            //UpdateInventoryListInUI();
+
+            // 1.5) Oбнови quest log
+            //UpdateQuestListInUI();
+
+            // 1.6) Oбнови списъка с оръжията и в момента equipped (weapons' combobox)
+            //UpdateWeaponListInUI();
+
+            // 1.7) Oбнови списъка с Potions
+            //UpdatePotionListInUI();
+        }
+
+        public void UseWeapon(Weapon weapon)
+        {
+            // 2.2) Определи damage, който ще се нанесе на Enemy
+            int damageToEnemy = RandomNumberGenerator.NumberBetween(weapon.MinimumDamage, weapon.MaximumDamage);
+
+            // 2.3) Приложи damage-a върху current HP на Enemy
+            currentEnemy.CurrentHitPoints -= damageToEnemy;
+
+            // 2.3.1) Изведи съобщение
+            RaiseMessage("You hit the " + currentEnemy.Name + " for " + damageToEnemy + " points.");
+
+            // 2.4) Ако противникът е мъртъв (currentHP = 0)
+            if (currentEnemy.CurrentHitPoints <= 0)
+            {
+                // 2.4.1) Съобщение за победен противник
+                RaiseMessage("");
+                RaiseMessage("You defeated the " + currentEnemy.Name);
+
+                // 2.4.2) Добави xp на играча
+                AddExperiencePoints(currentEnemy.RewardExperiencePoints);
+                RaiseMessage("You receive " + currentEnemy.RewardExperiencePoints + " experience points");
+
+                // 2.4.3) Добави gold на играча
+                Gold += currentEnemy.RewardGold;
+                RaiseMessage("You receive " + currentEnemy.RewardGold + " gold");
+
+                // 2.4.4) Създай и отвори LootTable-a на мъртвия противник
+                List<InventoryItem> lootedItems = new List<InventoryItem>();
+
+                // Добави предмети към списъка, сравнявайки произволно число с %drop chance
+                foreach (LootItem lootItem in currentEnemy.LootTable)
+                    if (RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.DropPercentage)
+                        lootedItems.Add(new InventoryItem(lootItem.Details, 1));
+
+                // Ако нито един предмет не "падне" (не се добави, възможно е ако няма предмети със 100% drop rate), да се добавят default items (може да е 1)
+                if (lootedItems.Count == 0)
+                    foreach (LootItem lootItem in currentEnemy.LootTable)
+                        if (lootItem.IsDefaultItem)
+                            lootedItems.Add(new InventoryItem(lootItem.Details, 1));
+
+                // 2.4.4.1) и 2.4.4.2) Добави избрани items в Inventory на играта и изведи съобщение за всеки item от loot-a
+                foreach (InventoryItem inventoryItem in lootedItems)
+                {
+                    AddItemToInventory(inventoryItem.Details);
+                    if (inventoryItem.Quantity == 1)
+                        RaiseMessage("You loot " + inventoryItem.Quantity + " " + inventoryItem.Details.Name);
+                    else
+                        RaiseMessage("You loot " + inventoryItem.Quantity + " " + inventoryItem.Details.NamePlural);
+                }
+
+                // 2.4.5) Обнови потребителския интерфейс
+                //UpdatePlayerStats();
+
+                //UpdateInventoryListInUI();
+                //UpdateWeaponListInUI();
+                //UpdatePotionListInUI();
+
+                // Нов ред в съобщенията
+                RaiseMessage("");
+
+                // 2.4.6) Премести героят на текущата локация (която е същата, но да няма enemy)
+                MoveTo(CurrentLocation);
+            }
+            else
+            {
+                // 2.5) Противникът е жив
+
+                // 2.5.1) Определи damage, който ще нанесе на player
+                int damageToPlayer = RandomNumberGenerator.NumberBetween(0, currentEnemy.MaximumDamage);
+
+                // 2.5.2) Изведи съобщение за damage-a
+                RaiseMessage("The " + currentEnemy.Name + " did " + damageToPlayer + " points of damage.");
+
+                // 2.5.3) Извади damage-a от currentHP на играча
+                CurrentHitPoints -= damageToPlayer;
+
+                // 2.5.3.1) Обнови потребителския интерфейс да показва новите стойности на HP
+                //lblHitPoints.Text = player.CurrentHitPoints.ToString();
+
+                // 2.5.4) Ако играчът е мъртъв
+                if (CurrentHitPoints <= 0)
+                {
+                    // 2.5.4.1) Съобщение 
+                    RaiseMessage("The " + currentEnemy.Name + " killed you.");
+
+                    // 2.5.4.2) Смени локацията на player на Home/Graveyard (само Home има; TODO: да направя Гробище за напред)
+                    MoveToHome();
+                }
+            }
+        }
+
+        public void UsePotion(HealingPotion potion)
+        {
+
+            // 3.2) Увеличи currentHP на играча
+            CurrentHitPoints = (CurrentHitPoints + potion.AmountToHeal);
+
+            // 3.2.1) currentHP НЕ трябва да надвишава maxHP
+            if (CurrentHitPoints > MaximumHitPoints)
+                CurrentHitPoints = MaximumHitPoints;
+
+            // 3.3) Премахни използвания potion от Inventory
+            RemoveItemFromInventory(potion, 1);
+
+            // 3.4) Изведи съобщение
+            RaiseMessage("You drink a " + potion.Name);
+
+            // 3.5) Противникът получава ход да атакува
+
+            // 3.5.1) Определи damage, който ще нанесе противникът на играча
+            int damageToPlayer = RandomNumberGenerator.NumberBetween(0, currentEnemy.MaximumDamage);
+
+            // 3.5.2) Изведи съобщение за damage-a
+            RaiseMessage("The " + currentEnemy.Name + " did " + damageToPlayer + " points of damage.");
+
+            // 3.5.3) Извади damage-a от currentHP на играча
+            CurrentHitPoints -= damageToPlayer;
+
+            // 3.5.4) Ако играчът е мъртъв
+            if (CurrentHitPoints <= 0)
+            {
+                // 3.5.4.1) Съобщение
+                RaiseMessage("The " + currentEnemy.Name + " killed you.");
+
+                // 3.5.4.2) Смени локацията на player на Home/Graveyard (само Home има; TODO: да направя Гробище за напред)
+                MoveToHome();
+            }
+
+            // 3.6) Обнови потребителския интерфейс
+            //lblHitPoints.Text = player.CurrentHitPoints.ToString();
+            //UpdateInventoryListInUI();
+            //UpdatePotionListInUI();
+        }
+
+        private void MoveToHome()
+        {
+            MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
+        }
+
         public void AddExperiencePoints(int experiencePointsToAdd)
         {
             ExperiencePoints += experiencePointsToAdd;
             MaximumHitPoints = 2 * (Level * Level + 2 * Level - 1);
-            switch(Level)
+            switch (Level)
             {
-                case 1: MaximumHitPoints = 10;
+                case 1:
+                    MaximumHitPoints = 10;
                     break;
-                case 2: MaximumHitPoints = 21;
+                case 2:
+                    MaximumHitPoints = 21;
                     break;
-                case 3: MaximumHitPoints = 32;
+                case 3:
+                    MaximumHitPoints = 32;
                     break;
             }
         }
